@@ -82,3 +82,6 @@ spring:
     properties:
       hibernate:
         format_sql: false
+  mvc:
+    pathmatch:
+      matching-strategy: ant_path_matcher
