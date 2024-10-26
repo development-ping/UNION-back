@@ -12,4 +12,8 @@ public interface UserManager {
     User save(User user);
 
     void delete(User user);
+
+    boolean existsByEmail(String email);
+
+    boolean existsByNickname(String nickname);
 }

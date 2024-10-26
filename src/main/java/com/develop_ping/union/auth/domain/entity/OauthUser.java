@@ -16,22 +16,30 @@ import java.util.UUID;
 public class OauthUser extends AuditingFields {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-
     private Long id;
-    @Column(nullable = false, unique = true, updatable = false)
+
+    @Column(nullable = false, updatable = false)
     private String email;
 
-    @Column(length = 50, nullable = false)
+    @Column(nullable = false)
     private String profileImage;
 
     // UUID 기반의 고유 토큰
     @Column(nullable = false, unique = true, updatable = false)
     private String token;
 
+    @Column(nullable = false, unique = true, updatable = false)
+    private String oauthAccessToken;
+
+    @Column(nullable = false, length = 30)
+    private String provider;
+
     @Builder
-    public OauthUser(String email, String profileImage, String token) {
+    public OauthUser(String email, String profileImage, String token, String provider, String oauthAccessToken) {
         this.email = email;
         this.profileImage = profileImage;
         this.token = token;
+        this.provider = provider;
+        this.oauthAccessToken = oauthAccessToken;
     }
 }
