@@ -1,4 +1,6 @@
 package com.develop_ping.union.notification.infra;
 
-public class NotificationManagerImpl {
+import com.develop_ping.union.notification.domain.NotificationManager;
+
+public class NotificationManagerImpl implements NotificationManager {
 }
