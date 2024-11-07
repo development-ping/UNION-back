@@ -1,5 +1,7 @@
 package com.develop_ping.union.notification.domain;
 
-public interface NotificationManager {
+import com.develop_ping.union.notification.domain.entity.Notification;
 
+public interface NotificationManager {
+    Notification save(Notification notification);
 }

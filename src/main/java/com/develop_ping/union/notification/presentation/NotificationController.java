@@ -4,15 +4,19 @@ import com.develop_ping.union.notification.domain.service.NotificationService;
 import com.develop_ping.union.notification.presentation.dto.request.NotificationCreationForCommentRequest;
 import com.develop_ping.union.notification.presentation.dto.request.NotificationCreationForGatheringRequest;
 import com.develop_ping.union.notification.presentation.dto.request.NotificationCreationForPostRequest;
+import com.develop_ping.union.notification.presentation.dto.response.NotificationCreationForCommentResponse;
+import com.develop_ping.union.notification.presentation.dto.response.NotificationCreationForGatheringResponse;
+import com.develop_ping.union.notification.presentation.dto.response.NotificationCreationForPostResponse;
+import com.develop_ping.union.notification.presentation.dto.response.NotificationReadForResponse;
 import com.develop_ping.union.user.domain.entity.User;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.ResourceBundle;
 
 @RestController("/notification")
 @Slf4j
@@ -21,20 +25,28 @@ public class NotificationController {
     private final NotificationService notificationService;
 
     @PostMapping("/post")
-    public ResponseEntity<HttpStatus> createNotificationForPost(@RequestBody NotificationCreationForPostRequest request,
-                                                                @AuthenticationPrincipal User user){
+    public ResponseEntity<NotificationCreationForPostResponse> createNotificationForPost(@RequestBody NotificationCreationForPostRequest request,
+                                                                                         @AuthenticationPrincipal User user){
         return ResponseEntity.status(HttpStatus.OK).build();
     }
 
     @PostMapping("/comment")
-    public ResponseEntity<HttpStatus> createNotificationForComment(@RequestBody NotificationCreationForCommentRequest request,
-                                                                   @AuthenticationPrincipal User user){
+    public ResponseEntity<NotificationCreationForCommentResponse> createNotificationForComment(@RequestBody NotificationCreationForCommentRequest request,
+                                                                                               @AuthenticationPrincipal User user){
         return ResponseEntity.status(HttpStatus.OK).build();
     }
 
     @PostMapping("/gathering")
-    public ResponseEntity<HttpStatus> createNotificationForGathering(@RequestBody NotificationCreationForGatheringRequest request,
-                                                                     @AuthenticationPrincipal User user){
+    public ResponseEntity<NotificationCreationForGatheringResponse> createNotificationForGathering(@RequestBody NotificationCreationForGatheringRequest request,
+                                                                                                   @AuthenticationPrincipal User user){
         return ResponseEntity.status(HttpStatus.OK).build();
+    }
+    @GetMapping("/")
+    public ResponseEntity<NotificationReadForResponse> readNotification(@RequestParam("page") Long page, @RequestParam("size") Long size){
+
+    }
+    @PostMapping("/read")
+    public ResponseEntity<HttpStatus> createNotificationIsRead(@RequestParam("page") Long page, @RequestParam("size") Long size){
+
     }
 }
