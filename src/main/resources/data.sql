@@ -64,3 +64,24 @@ VALUES
     (NOW(), NOW(), 'user3nick', 'User 3 description', 'https://example.com/user3.png', 'University 3', 'test3@test.com', 'token3', 'google', false),
     (NOW(), NOW(), 'user4nick', 'User 4 description', 'https://example.com/user4.png', 'University 4', 'test4@test.com', 'token4', 'google', false),
     (NOW(), NOW(), 'user5nick', 'User 5 description', 'https://example.com/user5.png', 'University 5', 'test5@test.com', 'token5', 'google', false);
+
+INSERT INTO posts (id, views, created_at, updated_at, user_id, content, thumbnail, title, type)
+VALUES
+(1, 150, '2024-11-07 10:00:00', '2024-11-07 10:00:00', 1, 'Content for all users', 'thumbnail1.jpg', 'Title 1', 'ALL');
+
+INSERT INTO posts (id, views, created_at, updated_at, user_id, content, thumbnail, title, type)
+VALUES
+(2, 75, '2024-11-06 09:30:00', '2024-11-06 09:30:00', 2, 'Free content available here', NULL, 'Title 2', 'FREE');
+
+INSERT INTO posts (id, views, created_at, updated_at, user_id, content, thumbnail, title, type)
+VALUES
+(3, 320, '2024-11-05 15:45:00', '2024-11-05 15:45:00', 3, 'Informational content about the topic', 'thumbnail3.jpg', 'Title 3', 'INFO');
+
+INSERT INTO posts (id, views, created_at, updated_at, user_id, content, thumbnail, title, type)
+VALUES
+(4, 50, '2024-11-04 08:15:00', '2024-11-04 08:15:00', 4, 'Marketplace listing content', 'thumbnail4.jpg', 'Title 4', 'MARKET');
+
+INSERT INTO posts (id, views, created_at, updated_at, user_id, content, thumbnail, title, type)
+VALUES
+(5, 200, '2024-11-03 12:00:00', '2024-11-03 12:00:00', 5, 'General content available for all', NULL, 'Title 5', 'ALL');
+

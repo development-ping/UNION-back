@@ -19,4 +19,8 @@ public class NotificationCommand {
     private Long typeId;
     private String srcToken;
 
+    @Override
+    public String toString() {
+        return "type : " + this.type + ", typeId :  " + this.typeId + ", token : " + this.srcToken;
+    }
 }

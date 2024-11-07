@@ -29,22 +29,20 @@ public class NotificationController {
 
     @PostMapping("/post")
     public ResponseEntity<NotificationCreationForPostResponse> createNotificationForPost(@RequestBody NotificationCreationForPostRequest request, @AuthenticationPrincipal User user){
+
         NotificationCommand command = request.postToCommand(user);
         NotificationInfo info = notificationService.createNotification(command);
         NotificationCreationForPostResponse response = NotificationCreationForPostResponse.from(info);
-
         return ResponseEntity.status(HttpStatus.OK).body(response);
     }
 
     @PostMapping("/comment")
-    public ResponseEntity<NotificationCreationForCommentResponse> createNotificationForComment(@RequestBody NotificationCreationForCommentRequest request,
-                                                                                               @AuthenticationPrincipal User user){
+    public ResponseEntity<NotificationCreationForCommentResponse> createNotificationForComment(@RequestBody NotificationCreationForCommentRequest request, @AuthenticationPrincipal User user){
         return ResponseEntity.status(HttpStatus.OK).build();
     }
 
     @PostMapping("/gathering")
-    public ResponseEntity<NotificationCreationForGatheringResponse> createNotificationForGathering(@RequestBody NotificationCreationForGatheringRequest request,
-                                                                                                   @AuthenticationPrincipal User user){
+    public ResponseEntity<NotificationCreationForGatheringResponse> createNotificationForGathering(@RequestBody NotificationCreationForGatheringRequest request, @AuthenticationPrincipal User user){
         return ResponseEntity.status(HttpStatus.OK).build();
     }
     @GetMapping("/")
@@ -53,6 +51,7 @@ public class NotificationController {
     }
     @PostMapping("/read")
     public ResponseEntity<HttpStatus> createNotificationIsRead(@RequestParam("page") Long page, @RequestParam("size") Long size){
+
         return ResponseEntity.status(HttpStatus.OK).build();
     }
 }
