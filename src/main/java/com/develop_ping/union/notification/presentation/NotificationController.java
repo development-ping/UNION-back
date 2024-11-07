@@ -33,6 +33,7 @@ public class NotificationController {
         NotificationCommand command = request.postToCommand(user);
         NotificationInfo info = notificationService.createNotification(command);
         NotificationCreationForPostResponse response = NotificationCreationForPostResponse.from(info);
+
         return ResponseEntity.status(HttpStatus.OK).body(response);
     }
 
@@ -47,6 +48,7 @@ public class NotificationController {
     }
     @GetMapping("/")
     public ResponseEntity<NotificationReadForResponse> readNotification(@RequestParam("page") Long page, @RequestParam("size") Long size){
+
         return ResponseEntity.status(HttpStatus.OK).body(NotificationReadForResponse.builder().build());
     }
     @PostMapping("/read")
