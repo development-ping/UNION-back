@@ -1,5 +1,7 @@
 package com.develop_ping.union.notification.presentation;
 
+import com.develop_ping.union.notification.domain.dto.NotificationCommand;
+import com.develop_ping.union.notification.domain.dto.NotificationInfo;
 import com.develop_ping.union.notification.domain.service.NotificationService;
 import com.develop_ping.union.notification.presentation.dto.request.NotificationCreationForCommentRequest;
 import com.develop_ping.union.notification.presentation.dto.request.NotificationCreationForGatheringRequest;
@@ -18,16 +20,20 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.ResourceBundle;
 
-@RestController("/notification")
+@RestController
+@RequestMapping("/notification")
 @Slf4j
 @RequiredArgsConstructor
 public class NotificationController {
     private final NotificationService notificationService;
 
     @PostMapping("/post")
-    public ResponseEntity<NotificationCreationForPostResponse> createNotificationForPost(@RequestBody NotificationCreationForPostRequest request,
-                                                                                         @AuthenticationPrincipal User user){
-        return ResponseEntity.status(HttpStatus.OK).build();
+    public ResponseEntity<NotificationCreationForPostResponse> createNotificationForPost(@RequestBody NotificationCreationForPostRequest request, @AuthenticationPrincipal User user){
+        NotificationCommand command = request.postToCommand(user);
+        NotificationInfo info = notificationService.createNotification(command);
+        NotificationCreationForPostResponse response = NotificationCreationForPostResponse.from(info);
+
+        return ResponseEntity.status(HttpStatus.OK).body(response);
     }
 
     @PostMapping("/comment")
@@ -43,10 +49,10 @@ public class NotificationController {
     }
     @GetMapping("/")
     public ResponseEntity<NotificationReadForResponse> readNotification(@RequestParam("page") Long page, @RequestParam("size") Long size){
-
+        return ResponseEntity.status(HttpStatus.OK).body(NotificationReadForResponse.builder().build());
     }
     @PostMapping("/read")
     public ResponseEntity<HttpStatus> createNotificationIsRead(@RequestParam("page") Long page, @RequestParam("size") Long size){
-
+        return ResponseEntity.status(HttpStatus.OK).build();
     }
 }
