@@ -85,3 +85,17 @@ INSERT INTO posts (id, views, created_at, updated_at, user_id, content, thumbnai
 VALUES
 (5, 200, '2024-11-03 12:00:00', '2024-11-03 12:00:00', 5, 'General content available for all', NULL, 'Title 5', 'ALL');
 
+INSERT INTO comments (created_at, id, parent_id, post_id, updated_at, user_id, content, parent_nickname)
+VALUES ('2024-11-08 01:00:00', 12, NULL, 1, '2024-11-08 01:00:00', 2, '첫 번째 댓글입니다.', NULL);
+
+INSERT INTO comments (created_at, id, parent_id, post_id, updated_at, user_id, content, parent_nickname)
+VALUES ('2024-11-08 01:01:00', 13, NULL, 1, '2024-11-08 01:01:00', 3, '첫 번째 댓글에 대한 답글입니다.', 'user1nick');
+
+INSERT INTO comments (created_at, id, parent_id, post_id, updated_at, user_id, content, parent_nickname)
+VALUES ('2024-11-08 01:02:00', 14, NULL, 2, '2024-11-08 01:02:00', 4, '새로운 글에 댓글 남깁니다.', NULL);
+
+INSERT INTO comments (created_at, id, parent_id, post_id, updated_at, user_id, content, parent_nickname)
+VALUES ('2024-11-08 01:03:00', 15, NULL, 2, '2024-11-08 01:03:00', 1, '두 번째 글에 대한 답글입니다.', 'user4nick');
+
+INSERT INTO comments (created_at, id, parent_id, post_id, updated_at, user_id, content, parent_nickname)
+VALUES ('2024-11-08 01:04:00', 16, NULL, 3, '2024-11-08 01:04:00', 1, '다른 글에 새 댓글 남김.', NULL);

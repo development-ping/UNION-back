@@ -17,10 +17,15 @@ import java.time.ZonedDateTime;
 public class NotificationCommand {
     private NotiType type;
     private Long typeId;
-    private String srcToken;
+    private Long commentId;
+    private Long page;
+    private Long size;
 
-    @Override
-    public String toString() {
-        return "type : " + this.type + ", typeId :  " + this.typeId + ", token : " + this.srcToken;
+    public static NotificationCommand readOf(Long page, Long size){
+        return NotificationCommand.builder()
+                .page(page)
+                .size(size)
+                .build();
     }
+
 }

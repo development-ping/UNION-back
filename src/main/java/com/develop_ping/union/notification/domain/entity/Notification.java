@@ -18,23 +18,25 @@ public class Notification extends AuditingFields {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     @Column(nullable = false)
-    private String srcToken;
-    @Column(nullable = false)
-    private String dstToken;
-    @Column(nullable = false)
     private NotiType type;
     @Column(nullable = false)
     private Long typeId;
     @Column(nullable = false)
     private Boolean isRead;
+    @ManyToOne
+    @JoinColumn(name = "creator_id")
+    private User creator;
+    @ManyToOne
+    @JoinColumn(name = "attendee_id")
+    private User attendee;
 
-    public static Notification of(String srcToken, String dstToken, NotiType type, Long typeId, Boolean isRead){
+    public static Notification of(NotiType type, Long typeId, Boolean isRead, User creator, User attendee){
         return Notification.builder()
-                .srcToken(srcToken)
-                .dstToken(dstToken)
                 .type(type)
                 .typeId(typeId)
                 .isRead(isRead)
+                .creator(creator)
+                .attendee(attendee)
                 .build();
     }
 }

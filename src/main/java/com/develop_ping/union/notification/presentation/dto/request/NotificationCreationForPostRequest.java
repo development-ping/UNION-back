@@ -16,12 +16,13 @@ import java.time.ZonedDateTime;
 @Getter
 public class NotificationCreationForPostRequest {
     private Long typeId;
+    private Long commentId;
 
-    public NotificationCommand postToCommand(User user) {
+    public NotificationCommand toCommand(User user) {
         return NotificationCommand.builder()
                 .type(NotiType.POST)
                 .typeId(this.typeId)
-                .srcToken(user.getToken())
+                .commentId(this.commentId)
                 .build();
     }
 }

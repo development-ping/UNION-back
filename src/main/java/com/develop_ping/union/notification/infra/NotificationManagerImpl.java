@@ -5,6 +5,8 @@ import com.develop_ping.union.notification.domain.entity.Notification;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
+import java.util.List;
+
 @Component
 @RequiredArgsConstructor
 public class NotificationManagerImpl implements NotificationManager {
@@ -12,6 +14,11 @@ public class NotificationManagerImpl implements NotificationManager {
 
     public Notification save(Notification notification){
         return notificationRepository.save(notification);
+    }
+
+    @Override
+    public List<Notification> findAllOrderByDate(String srcToken, Long page, Long size) {
+        return notificationRepository.findAllOrderByDate(srcToken, page, size);
     }
 
 }
