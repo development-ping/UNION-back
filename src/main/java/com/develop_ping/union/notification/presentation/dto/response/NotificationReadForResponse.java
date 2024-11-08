@@ -20,6 +20,4 @@ public class NotificationReadForResponse {
     private String content;
     private ZonedDateTime createdAt;
     private Boolean isRead;
-
-
 }

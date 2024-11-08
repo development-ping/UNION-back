@@ -104,21 +104,8 @@ public class NotificationRepositoryCustomImpl implements NotificationRepositoryC
             notificationList.add(notification);
         }
 
-//        System.out.println(notificationList.size());
-//        for (NotificationReadForService no : notificationList)
-//            System.out.println(no.getId() + " / " + no.getType() + " / " + no.getNickname() + " / " + no.getTitle() + " / " + no.getContent() + " / " + no.getCreatedAt() + " / " + no.getIsRead());
-
         return notificationList;
     }
 
 
 }
-/*
-    private Long id;
-    private NotiType type;
-    private String nickname;
-    private String title;
-    private String content;
-    private ZonedDateTime createdAt;
-    private Boolean isRead;
- */
