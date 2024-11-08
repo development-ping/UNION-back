@@ -52,10 +52,11 @@ public class NotificationController {
         return ResponseEntity.status(HttpStatus.OK).body(response);
     }
     @GetMapping("/read")
-    public ResponseEntity<NotificationReadForResponses> readNotification(@RequestParam("page") Long page, @RequestParam("size") Long size, @AuthenticationPrincipal User user){
+    public ResponseEntity<NotificationReadForResponseList> readNotification(@RequestParam("page") Long page, @RequestParam("size") Long size, @AuthenticationPrincipal User user){
         NotificationCommand command = NotificationCommand.readOf(page, size, user);
         NotificationListInfo listInfo = notificationService.readNotification(command);
-        return null;
+        NotificationReadForResponseList response = NotificationReadForResponseList.from(listInfo);
+        return ResponseEntity.status(HttpStatus.OK).body(response);
     }
     @PostMapping("/read")
     public ResponseEntity<HttpStatus> createNotificationIsRead(@RequestParam("page") Long page, @RequestParam("size") Long size){
