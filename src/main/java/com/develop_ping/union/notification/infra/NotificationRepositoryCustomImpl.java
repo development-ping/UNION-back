@@ -21,14 +21,11 @@ import java.util.List;
 public class NotificationRepositoryCustomImpl implements NotificationRepositoryCustom{
     @PersistenceContext
     EntityManager em;
-    @Override
-    public List<Notification> findAllOrderByDate(String srcToken, Long page, Long size) {
-        return null;
-    }
+
 
     @Override
-    public List<NotificationReadForService> findAllOrder(Long page, Long size, User user) {
-        String query = """
+    public List<NotificationReadForService> findAllOrderById(Long page, Long size, User user) {
+        String queryForRead = """
                 select *
                 from(
                 -- post
@@ -78,7 +75,7 @@ public class NotificationRepositoryCustomImpl implements NotificationRepositoryC
                 ) tb
                 order by tb.id desc;
                 """;
-        List<Object[]> results = em.createNativeQuery(query)
+        List<Object[]> results = em.createNativeQuery(queryForRead)
                 .setParameter("userId", user.getId())
                 .setParameter("size", size)
                 .setParameter("offset", page * size)
@@ -105,6 +102,30 @@ public class NotificationRepositoryCustomImpl implements NotificationRepositoryC
         }
 
         return notificationList;
+    }
+
+    @Override
+    public void updateAll(Long page, Long size, User user) {
+        // update query
+        String queryForUpdate = """
+                UPDATE notifications
+                SET is_read = true
+                WHERE id IN (
+                    SELECT temp.id FROM (
+                        SELECT notifications.id
+                        FROM notifications
+                        WHERE notifications.creator_id = :userId
+                        ORDER BY notifications.id DESC
+                        LIMIT :size OFFSET :offset
+                    ) AS temp
+                );
+                """;
+
+        em.createNativeQuery(queryForUpdate)
+                .setParameter("userId", user.getId())
+                .setParameter("size", size)
+                .setParameter("offset", page * size)
+                .executeUpdate();
     }
 
 

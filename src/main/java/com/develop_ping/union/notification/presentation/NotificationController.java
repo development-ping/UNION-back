@@ -58,9 +58,10 @@ public class NotificationController {
         NotificationReadForResponseList response = NotificationReadForResponseList.from(listInfo);
         return ResponseEntity.status(HttpStatus.OK).body(response);
     }
-    @PostMapping("/read")
-    public ResponseEntity<HttpStatus> createNotificationIsRead(@RequestParam("page") Long page, @RequestParam("size") Long size){
-
+    @PutMapping("/read")
+    public ResponseEntity<HttpStatus> createNotificationIsRead(@RequestParam("page") Long page, @RequestParam("size") Long size, @AuthenticationPrincipal User user){
+        NotificationCommand command = NotificationCommand.readOf(page, size, user);
+        notificationService.updateNotification(command);
         return ResponseEntity.status(HttpStatus.OK).build();
     }
 }

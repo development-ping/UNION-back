@@ -1,7 +1,6 @@
 package com.develop_ping.union.notification.infra;
 
 import com.develop_ping.union.notification.domain.NotificationManager;
-import com.develop_ping.union.notification.domain.dto.NotificationInfo;
 import com.develop_ping.union.notification.domain.entity.Notification;
 import com.develop_ping.union.notification.infra.dto.NotificationReadForService;
 import com.develop_ping.union.user.domain.entity.User;
@@ -21,7 +20,12 @@ public class NotificationManagerImpl implements NotificationManager {
 
     @Override
     public List<NotificationReadForService> findAllOrderByDate(Long page, Long size, User user) {
-        return notificationRepository.findAllOrder(page, size, user);
+        return notificationRepository.findAllOrderById(page, size, user);
+    }
+
+    @Override
+    public void updateAll(Long page, Long size, User user) {
+        notificationRepository.updateAll(page, size, user);
     }
 
 }

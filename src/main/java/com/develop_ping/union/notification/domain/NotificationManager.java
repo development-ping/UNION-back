@@ -10,4 +10,5 @@ import java.util.List;
 public interface NotificationManager {
     Notification save(Notification notification);
     List<NotificationReadForService> findAllOrderByDate(Long page, Long size, User user);
+    void updateAll(Long page, Long size, User user);
 }
