@@ -2,6 +2,7 @@ package com.develop_ping.union.notification.presentation;
 
 import com.develop_ping.union.notification.domain.dto.NotificationCommand;
 import com.develop_ping.union.notification.domain.dto.NotificationInfo;
+import com.develop_ping.union.notification.domain.dto.NotificationListInfo;
 import com.develop_ping.union.notification.domain.service.NotificationService;
 import com.develop_ping.union.notification.presentation.dto.request.NotificationCreationForCommentRequest;
 import com.develop_ping.union.notification.presentation.dto.request.NotificationCreationForGatheringRequest;
@@ -50,9 +51,10 @@ public class NotificationController {
 
         return ResponseEntity.status(HttpStatus.OK).body(response);
     }
-    @GetMapping("/")
+    @GetMapping("/read")
     public ResponseEntity<NotificationReadForResponses> readNotification(@RequestParam("page") Long page, @RequestParam("size") Long size, @AuthenticationPrincipal User user){
-
+        NotificationCommand command = NotificationCommand.readOf(page, size, user);
+        NotificationListInfo listInfo = notificationService.readNotification(command);
         return null;
     }
     @PostMapping("/read")

@@ -26,6 +26,9 @@ public class NotificationInfo {
     private Boolean isRead;
     private User creator;
     private User attendee;
+    private String nickname;
+    private String title;
+    private String content;
     private List<Notification> notifications;
 
     public static NotificationInfo of(Notification notification){

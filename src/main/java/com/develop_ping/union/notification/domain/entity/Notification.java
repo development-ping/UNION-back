@@ -18,6 +18,7 @@ public class Notification extends AuditingFields {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     @Column(nullable = false)
+    @Enumerated(EnumType.STRING)
     private NotiType type;
     @Column(nullable = false)
     private Long creatorTypeId;

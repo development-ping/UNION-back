@@ -22,10 +22,11 @@ public class NotificationCommand {
     private Long size;
     private User user;
 
-    public static NotificationCommand readOf(Long page, Long size){
+    public static NotificationCommand readOf(Long page, Long size, User user){
         return NotificationCommand.builder()
                 .page(page)
                 .size(size)
+                .user(user)
                 .build();
     }
 

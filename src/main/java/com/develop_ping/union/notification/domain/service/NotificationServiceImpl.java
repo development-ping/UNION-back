@@ -5,7 +5,9 @@ import com.develop_ping.union.gathering.domain.GatheringManager;
 import com.develop_ping.union.notification.domain.NotificationManager;
 import com.develop_ping.union.notification.domain.dto.NotificationCommand;
 import com.develop_ping.union.notification.domain.dto.NotificationInfo;
+import com.develop_ping.union.notification.domain.dto.NotificationListInfo;
 import com.develop_ping.union.notification.domain.entity.Notification;
+import com.develop_ping.union.notification.infra.dto.NotificationReadForService;
 import com.develop_ping.union.party.domain.PartyManager;
 import com.develop_ping.union.party.domain.entity.PartyRole;
 import com.develop_ping.union.post.domain.PostManager;
@@ -68,7 +70,9 @@ public class NotificationServiceImpl implements NotificationService{
     }
 
     @Override
-    public NotificationInfo readNotification(NotificationCommand command) {
-        return null;
+    public NotificationListInfo readNotification(NotificationCommand command) {
+        List<NotificationReadForService> notificationForServices = notificationManager.findAllOrderByDate(command.getPage(), command.getSize(), command.getUser());
+
+        return NotificationListInfo.of(notificationForServices);
     }
 }
