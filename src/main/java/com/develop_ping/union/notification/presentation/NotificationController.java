@@ -27,6 +27,7 @@ public class NotificationController {
 
     @PostMapping("/post")
     public ResponseEntity<NotificationCreationForPostResponse> createNotificationForPost(@RequestBody NotificationCreationForPostRequest request, @AuthenticationPrincipal User user){
+        log.info("[ CALL: NotificationController.createNotificationForPost() ] user id: {}", user.getId());
         NotificationCommand command = request.toCommand(user);
         NotificationInfo info = notificationService.createNotificationForPost(command);
         NotificationCreationForPostResponse response = NotificationCreationForPostResponse.from(info);
@@ -35,6 +36,7 @@ public class NotificationController {
     }
     @PostMapping("/comment")
     public ResponseEntity<NotificationCreationForCommentResponse> createNotificationForComment(@RequestBody NotificationCreationForCommentRequest request, @AuthenticationPrincipal User user){
+        log.info("[ CALL: NotificationController.createNotificationForComment() ] user id: {}", user.getId());
         NotificationCommand command = request.toCommand(user);
         NotificationInfo info = notificationService.createNotificationForComment(command);
         NotificationCreationForCommentResponse response = NotificationCreationForCommentResponse.from(info);
@@ -43,6 +45,7 @@ public class NotificationController {
     }
     @PostMapping("/gathering")
     public ResponseEntity<NotificationCreationForGatheringResponse> createNotificationForGathering(@RequestBody NotificationCreationForGatheringRequest request, @AuthenticationPrincipal User user){
+        log.info("[ CALL: NotificationController.createNotificationForGathering() ] user id: {}", user.getId());
         NotificationCommand command = request.toCommand(user);
         NotificationInfo info = notificationService.createNotificationForGathering(command);
         NotificationCreationForGatheringResponse response = NotificationCreationForGatheringResponse.from(info);
@@ -51,6 +54,7 @@ public class NotificationController {
     }
     @GetMapping("/read")
     public ResponseEntity<NotificationReadForResponseList> readNotification(@RequestParam("page") Long page, @RequestParam("size") Long size, @AuthenticationPrincipal User user){
+        log.info("[ CALL: NotificationController.readNotification() ] user id: {}", user.getId());
         NotificationCommand command = NotificationCommand.readOf(page, size, user);
         NotificationListInfo listInfo = notificationService.readNotification(command);
         NotificationReadForResponseList response = NotificationReadForResponseList.from(listInfo);
@@ -59,6 +63,7 @@ public class NotificationController {
     }
     @PutMapping("/read")
     public ResponseEntity<HttpStatus> createNotificationIsRead(@RequestParam("page") Long page, @RequestParam("size") Long size, @AuthenticationPrincipal User user){
+        log.info("[ CALL: NotificationController.createNotificationIsRead() ] user id: {}", user.getId());
         NotificationCommand command = NotificationCommand.readOf(page, size, user);
         notificationService.updateNotification(command);
 

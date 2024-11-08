@@ -29,6 +29,8 @@ public class NotificationServiceImpl implements NotificationService{
     private final PartyManager partyManager;
     @Override
     public NotificationInfo createNotificationForPost(NotificationCommand command) {
+        log.info("[ CALL: NotificationService.createNotificationForPost() ] POST-type id: {}", command.getTypeId());
+
         // extract post owner
         User creator = postManager.findById(command.getTypeId()).getUser();
 
@@ -43,6 +45,8 @@ public class NotificationServiceImpl implements NotificationService{
 
     @Override
     public NotificationInfo createNotificationForComment(NotificationCommand command) {
+        log.info("[ CALL: NotificationService.createNotificationForComment() ] COMMENT-type id: {}", command.getTypeId());
+
         // extract comment owner
         User creator = commentManager.findById(command.getTypeId()).getUser();
 
@@ -57,6 +61,8 @@ public class NotificationServiceImpl implements NotificationService{
 
     @Override
     public NotificationInfo createNotificationForGathering(NotificationCommand command) {
+        log.info("[ CALL: NotificationService.createNotificationForGathering() ] GATHERING-type id: {}", command.getTypeId());
+
         // extract gathering owner
         User creator = partyManager.findOwnerByGatheringIdAndRole(command.getTypeId(), PartyRole.OWNER).orElseThrow().getUser();
 
@@ -71,6 +77,8 @@ public class NotificationServiceImpl implements NotificationService{
 
     @Override
     public NotificationListInfo readNotification(NotificationCommand command) {
+        log.info("[ CALL: NotificationService.readNotification() ] user id: {}", command.getUser().getId());
+
         List<NotificationReadForService> notificationForServices = notificationManager.findAllOrderByDate(command.getPage(), command.getSize(), command.getUser());
         return NotificationListInfo.of(notificationForServices);
     }
@@ -78,6 +86,8 @@ public class NotificationServiceImpl implements NotificationService{
     @Override
     @Transactional
     public void updateNotification(NotificationCommand command) {
+        log.info("[ CALL: NotificationService.updateNotification() ] user id: {}", command.getUser().getId());
+
         notificationManager.updateAll(command.getPage(), command.getSize(), command.getUser());
     }
 }

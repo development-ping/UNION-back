@@ -1,13 +1,7 @@
 package com.develop_ping.union.notification.infra;
 
-import com.develop_ping.union.comment.domain.entity.QComment;
-import com.develop_ping.union.gathering.domain.entity.QGathering;
 import com.develop_ping.union.notification.domain.NotiType;
-import com.develop_ping.union.notification.domain.entity.Notification;
-import com.develop_ping.union.notification.domain.entity.QNotification;
 import com.develop_ping.union.notification.infra.dto.NotificationReadForService;
-import com.develop_ping.union.post.domain.entity.QPost;
-import com.develop_ping.union.user.domain.entity.QUser;
 import com.develop_ping.union.user.domain.entity.User;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
