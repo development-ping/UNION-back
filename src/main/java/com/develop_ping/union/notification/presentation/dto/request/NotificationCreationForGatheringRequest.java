@@ -5,11 +5,13 @@ import com.develop_ping.union.notification.domain.dto.NotificationCommand;
 import com.develop_ping.union.user.domain.entity.User;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
+@Getter
 public class NotificationCreationForGatheringRequest {
     private Long typeId;
 
@@ -18,6 +20,7 @@ public class NotificationCreationForGatheringRequest {
                 .type(NotiType.GATHERING)
                 .typeId(this.typeId)
                 .commentId(0L)
+                .user(user)
                 .build();
     }
 }

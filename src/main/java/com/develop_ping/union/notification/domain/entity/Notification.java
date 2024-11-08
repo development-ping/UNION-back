@@ -20,7 +20,9 @@ public class Notification extends AuditingFields {
     @Column(nullable = false)
     private NotiType type;
     @Column(nullable = false)
-    private Long typeId;
+    private Long creatorTypeId;
+    @Column(nullable = false)
+    private Long attendeeTypeId;
     @Column(nullable = false)
     private Boolean isRead;
     @ManyToOne
@@ -30,10 +32,11 @@ public class Notification extends AuditingFields {
     @JoinColumn(name = "attendee_id")
     private User attendee;
 
-    public static Notification of(NotiType type, Long typeId, Boolean isRead, User creator, User attendee){
+    public static Notification of(NotiType type, Long creatorTypeId, Long attendeeTypeId, Boolean isRead, User creator, User attendee){
         return Notification.builder()
                 .type(type)
-                .typeId(typeId)
+                .creatorTypeId(creatorTypeId)
+                .attendeeTypeId(attendeeTypeId)
                 .isRead(isRead)
                 .creator(creator)
                 .attendee(attendee)

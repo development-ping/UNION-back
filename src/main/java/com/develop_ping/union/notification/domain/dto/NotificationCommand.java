@@ -20,6 +20,7 @@ public class NotificationCommand {
     private Long commentId;
     private Long page;
     private Long size;
+    private User user;
 
     public static NotificationCommand readOf(Long page, Long size){
         return NotificationCommand.builder()

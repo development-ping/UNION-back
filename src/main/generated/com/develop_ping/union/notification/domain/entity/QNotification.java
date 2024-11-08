@@ -26,18 +26,20 @@ public class QNotification extends EntityPathBase<Notification> {
 
     public final com.develop_ping.union.user.domain.entity.QUser attendee;
 
+    public final NumberPath<Long> attendeeTypeId = createNumber("attendeeTypeId", Long.class);
+
     //inherited
     public final DateTimePath<java.time.ZonedDateTime> createdAt = _super.createdAt;
 
     public final com.develop_ping.union.user.domain.entity.QUser creator;
+
+    public final NumberPath<Long> creatorTypeId = createNumber("creatorTypeId", Long.class);
 
     public final NumberPath<Long> id = createNumber("id", Long.class);
 
     public final BooleanPath isRead = createBoolean("isRead");
 
     public final EnumPath<com.develop_ping.union.notification.domain.NotiType> type = createEnum("type", com.develop_ping.union.notification.domain.NotiType.class);
-
-    public final NumberPath<Long> typeId = createNumber("typeId", Long.class);
 
     //inherited
     public final DateTimePath<java.time.ZonedDateTime> updatedAt = _super.updatedAt;

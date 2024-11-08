@@ -34,7 +34,7 @@ public class NotificationServiceImpl implements NotificationService{
         User attendee = commentManager.findById(command.getCommentId()).getUser();
 
         Notification notification = notificationManager.save(Notification.of(command.getType(),
-                command.getTypeId(), false, creator, attendee));
+                command.getTypeId(), command.getCommentId(), false, creator, attendee));
 
         return NotificationInfo.of(notification);
     }
@@ -48,7 +48,7 @@ public class NotificationServiceImpl implements NotificationService{
         User attendee = commentManager.findById(command.getCommentId()).getUser();
 
         Notification notification = notificationManager.save(Notification.of(command.getType(),
-                command.getTypeId(), false, creator, attendee));
+                command.getTypeId(), command.getCommentId(), false, creator, attendee));
 
         return NotificationInfo.of(notification);
     }
@@ -58,11 +58,11 @@ public class NotificationServiceImpl implements NotificationService{
         // extract gathering owner
         User creator = partyManager.findOwnerByGatheringIdAndRole(command.getTypeId(), PartyRole.OWNER).orElseThrow().getUser();
 
-        // extract comment owner
-        User attendee = commentManager.findById(command.getCommentId()).getUser();
+        // extract user
+        User attendee = command.getUser();
 
         Notification notification = notificationManager.save(Notification.of(command.getType(),
-                0L, false, creator, attendee));
+                command.getTypeId(), 0L, false, creator, attendee));
 
         return NotificationInfo.of(notification);
     }

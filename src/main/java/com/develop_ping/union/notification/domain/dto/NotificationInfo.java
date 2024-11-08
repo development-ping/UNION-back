@@ -2,7 +2,6 @@ package com.develop_ping.union.notification.domain.dto;
 
 import com.develop_ping.union.notification.domain.NotiType;
 import com.develop_ping.union.notification.domain.entity.Notification;
-import com.develop_ping.union.notification.presentation.dto.response.NotificationReadForResponse;
 import com.develop_ping.union.user.domain.entity.User;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -20,7 +19,8 @@ import java.util.List;
 public class NotificationInfo {
     private Long id;
     private NotiType type;
-    private Long typeId;
+    private Long creatorTypeId;
+    private Long attendeeTypeId;
     private ZonedDateTime createdAt;
     private ZonedDateTime updatedAt;
     private Boolean isRead;
@@ -34,7 +34,8 @@ public class NotificationInfo {
                 .creator(notification.getCreator())
                 .attendee(notification.getAttendee())
                 .type(notification.getType())
-                .typeId(notification.getTypeId())
+                .creatorTypeId(notification.getCreatorTypeId())
+                .attendeeTypeId(notification.getAttendeeTypeId())
                 .createdAt(ZonedDateTime.now())
                 .updatedAt(ZonedDateTime.now())
                 .isRead(notification.getIsRead())

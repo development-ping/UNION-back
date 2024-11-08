@@ -26,7 +26,6 @@ public class NotificationController {
 
     @PostMapping("/post")
     public ResponseEntity<NotificationCreationForPostResponse> createNotificationForPost(@RequestBody NotificationCreationForPostRequest request, @AuthenticationPrincipal User user){
-
         NotificationCommand command = request.toCommand(user);
         NotificationInfo info = notificationService.createNotificationForPost(command);
         NotificationCreationForPostResponse response = NotificationCreationForPostResponse.from(info);
