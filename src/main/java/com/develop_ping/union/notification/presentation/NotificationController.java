@@ -33,7 +33,6 @@ public class NotificationController {
 
         return ResponseEntity.status(HttpStatus.OK).body(response);
     }
-
     @PostMapping("/comment")
     public ResponseEntity<NotificationCreationForCommentResponse> createNotificationForComment(@RequestBody NotificationCreationForCommentRequest request, @AuthenticationPrincipal User user){
         NotificationCommand command = request.toCommand(user);
@@ -42,7 +41,6 @@ public class NotificationController {
 
         return ResponseEntity.status(HttpStatus.OK).body(response);
     }
-
     @PostMapping("/gathering")
     public ResponseEntity<NotificationCreationForGatheringResponse> createNotificationForGathering(@RequestBody NotificationCreationForGatheringRequest request, @AuthenticationPrincipal User user){
         NotificationCommand command = request.toCommand(user);
@@ -56,12 +54,14 @@ public class NotificationController {
         NotificationCommand command = NotificationCommand.readOf(page, size, user);
         NotificationListInfo listInfo = notificationService.readNotification(command);
         NotificationReadForResponseList response = NotificationReadForResponseList.from(listInfo);
+
         return ResponseEntity.status(HttpStatus.OK).body(response);
     }
     @PutMapping("/read")
     public ResponseEntity<HttpStatus> createNotificationIsRead(@RequestParam("page") Long page, @RequestParam("size") Long size, @AuthenticationPrincipal User user){
         NotificationCommand command = NotificationCommand.readOf(page, size, user);
         notificationService.updateNotification(command);
+
         return ResponseEntity.status(HttpStatus.OK).build();
     }
 }

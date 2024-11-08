@@ -26,7 +26,6 @@ public class NotificationServiceImpl implements NotificationService{
     private final NotificationManager notificationManager;
     private final CommentManager commentManager;
     private final PostManager postManager;
-    private final GatheringManager gatheringManager;
     private final PartyManager partyManager;
     @Override
     public NotificationInfo createNotificationForPost(NotificationCommand command) {
@@ -72,9 +71,7 @@ public class NotificationServiceImpl implements NotificationService{
 
     @Override
     public NotificationListInfo readNotification(NotificationCommand command) {
-
         List<NotificationReadForService> notificationForServices = notificationManager.findAllOrderByDate(command.getPage(), command.getSize(), command.getUser());
-
         return NotificationListInfo.of(notificationForServices);
     }
 
