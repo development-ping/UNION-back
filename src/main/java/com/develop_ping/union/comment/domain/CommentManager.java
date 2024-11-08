@@ -9,5 +9,7 @@ public interface CommentManager {
     Comment findById(Long id);
     void delete(Comment comment);
     List<Comment> findByPostIdAndParentIsNull(Long postId);
+    List<Comment> findByPostId(Long postId);
     long countByPostId(Long postId);
+    Comment findBestComment(Long postId);
 }

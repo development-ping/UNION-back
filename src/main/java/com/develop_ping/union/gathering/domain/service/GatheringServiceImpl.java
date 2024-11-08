@@ -2,8 +2,6 @@ package com.develop_ping.union.gathering.domain.service;
 
 import com.develop_ping.union.chat.domain.ChatManager;
 import com.develop_ping.union.gathering.domain.GatheringManager;
-import com.develop_ping.union.gathering.domain.GatheringSortStrategy;
-import com.develop_ping.union.gathering.domain.GatheringSortStrategyFactory;
 import com.develop_ping.union.gathering.domain.dto.request.GatheringCommand;
 import com.develop_ping.union.gathering.domain.dto.request.GatheringListCommand;
 import com.develop_ping.union.gathering.domain.dto.response.GatheringDetailInfo;
@@ -34,13 +32,11 @@ import java.util.List;
 @Slf4j
 @Service
 @RequiredArgsConstructor
-@Transactional(readOnly = true)
 public class GatheringServiceImpl implements GatheringService {
 
     private final GatheringManager gatheringManager;
     private final PartyManager partyManager;
     private final ReactionManager reactionManager;
-    private final GatheringSortStrategyFactory strategyFactory;
     private final PhotoManager photoManager;
     private final ChatManager chatManager;
 
@@ -112,12 +108,11 @@ public class GatheringServiceImpl implements GatheringService {
     }
 
     @Override
+    @Transactional(readOnly = true)
     public Slice<GatheringListInfo> getGatheringList(GatheringListCommand command) {
         log.info("\n모임 리스트 getGatheringList 조회 ServiceImpl 클래스 : {}", command);
 
-        GatheringSortStrategy strategy = strategyFactory.getStrategy(command.getSortType());
-
-        return gatheringManager.getGatheringList(strategy, command);
+        return gatheringManager.getGatheringList(command);
     }
 
     @Override
@@ -185,19 +180,21 @@ public class GatheringServiceImpl implements GatheringService {
     }
 
     @Override
+    @Transactional(readOnly = true)
     public Slice<GatheringListInfo> getMyGatheringList(User user, Pageable pageable) {
         log.info("\n내가 생성한 모임 리스트 조회 getMyGatheringList ServiceImpl 클래스 : userId {}, pageable {}", user.getId(), pageable);
 
         Slice<Gathering> gatheringList = gatheringManager.getMyGatheringList(user, pageable);
-        return GatheringListInfo.of(gatheringList);
+        return GatheringListInfo.fromSlice(gatheringList);
     }
 
     @Override
+    @Transactional(readOnly = true)
     public Slice<GatheringListInfo> getUserGatheringList(String userToken, Pageable pageable) {
         log.info("\n특정 사용자의 모임 리스트 조회 getUserGatheringList ServiceImpl 클래스 : userToken {}, pageable {}", userToken, pageable);
 
         Slice<Gathering> gatheringList = gatheringManager.getUserGatheringList(userToken, pageable);
-        return GatheringListInfo.of(gatheringList);
+        return GatheringListInfo.fromSlice(gatheringList);
     }
 
     @Override
@@ -213,5 +210,30 @@ public class GatheringServiceImpl implements GatheringService {
 
         log.info("\n모임 모집 완료 처리 완료 : true: 모집 완료, false: 모집 중 {}", gathering.getRecruited());
         return GatheringInfo.of(gathering);
+    }
+
+    @Override
+    public void kickOutUser(String userToken, Long gatheringId, User user) {
+        log.info("\n모임 멤버 추방 kickOutUser ServiceImpl 클래스 : userToken {}, gatheringId {}, user {}", userToken, gatheringId, user.getId());
+
+        gatheringManager.kickOutUser(userToken, gatheringId, user);
+    }
+
+    @Override
+    public List<GatheringListInfo> getParticipatedGatheringList(User user) {
+        log.info("\n내가 참여한 모임 리스트 조회 getParticipatedGatheringList ServiceImpl 클래스 : userId {}", user.getId());
+
+        List<Gathering> participatedGatheringList = gatheringManager.getParticipatedGatheringList(user);
+        return GatheringListInfo.fromList(participatedGatheringList);
+    }
+
+    @Override
+    @Transactional
+    public Long likeGathering(Long gatheringId, User user) {
+        log.info("\n모임 좋아요 likeGathering ServiceImpl 클래스 : gatheringId {}, user {}", gatheringId, user.getId());
+
+        Gathering gathering = gatheringManager.findById(gatheringId);
+
+        return reactionManager.likeGathering(user, gathering.getId());
     }
 }

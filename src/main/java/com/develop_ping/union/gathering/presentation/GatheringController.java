@@ -1,6 +1,7 @@
 package com.develop_ping.union.gathering.presentation;
 
 import com.develop_ping.union.gathering.domain.SortType;
+import com.develop_ping.union.gathering.domain.dto.request.GatheringCommand;
 import com.develop_ping.union.gathering.domain.dto.request.GatheringListCommand;
 import com.develop_ping.union.gathering.domain.dto.response.GatheringDetailInfo;
 import com.develop_ping.union.gathering.domain.dto.response.GatheringInfo;
@@ -21,6 +22,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @Slf4j
 @RequiredArgsConstructor
 @RestController
@@ -34,17 +37,18 @@ public class GatheringController {
         @RequestParam(value = "sortType", defaultValue = "LATEST") SortType sortType,
         @RequestParam(value = "latitude", defaultValue = "37.556016") Double latitude,
         @RequestParam(value = "longitude", defaultValue = "126.972355") Double longitude,
+        @RequestParam(value = "keyword", required = false) String keyword,
         @PageableDefault(size = 3) Pageable pageable
     ) {
         log.info("모임 리스트 조회 요청 - sortType: {}, latitude: {}, longitude: {}, pageable: {}", sortType, latitude, longitude, pageable);
 
-        Slice<GatheringListInfo> gatheringList = gatheringService.getGatheringList(
-            GatheringListCommand.of(sortType, latitude, longitude, pageable)
-        );
+        Slice<GatheringListInfo> gatheringList =
+            gatheringService
+                .getGatheringList(GatheringListCommand.of(sortType, latitude, longitude, keyword, pageable));
 
-        Slice<GatheringListResponse> response = gatheringList.map(GatheringListResponse::from);
+        Slice<GatheringListResponse> responses = gatheringList.map(GatheringListResponse::from);
 
-        return ResponseEntity.ok(response);
+        return ResponseEntity.ok(responses);
     }
 
     @PostMapping
@@ -142,7 +146,7 @@ public class GatheringController {
         return ResponseEntity.ok(response);
     }
 
-    @PostMapping("{gatheringId}/recruited")
+    @PostMapping("/{gatheringId}/recruited")
     public ResponseEntity<GatheringResponse> recruitedGathering(
         @AuthenticationPrincipal User user,
         @PathVariable("gatheringId") Long gatheringId
@@ -153,5 +157,35 @@ public class GatheringController {
         GatheringResponse response = GatheringResponse.from(gatheringInfo);
 
         return ResponseEntity.ok(response);
+    }
+
+    @PostMapping("/{gatheringId}/{userToken}/kick-out")
+    public ResponseEntity<Void> kickOutUser(
+        @AuthenticationPrincipal User user,
+        @PathVariable("userToken") String userToken,
+        @PathVariable("gatheringId") Long gatheringId
+    ) {
+        log.info("모임 멤버 추방 요청 - gatheringId: {}, userToken: {}, user: {}", gatheringId, userToken, user);
+
+        gatheringService.kickOutUser(userToken, gatheringId, user);
+        return ResponseEntity.ok().build();
+    }
+
+    @GetMapping("/my/participated")
+    public List<GatheringListResponse> getParticipatedGatheringList(@AuthenticationPrincipal User user) {
+        log.info("\n내가 참여한 모임 리스트 조회 getParticipatedGatheringList ServiceImpl 클래스 : userId {}", user.getId());
+
+        List<GatheringListInfo> participatedGatheringList = gatheringService.getParticipatedGatheringList(user);
+        return participatedGatheringList.stream().map(GatheringListResponse::from).toList();
+    }
+
+    @PostMapping("/like/{gatheringId}")
+    public ResponseEntity<Long> likeGathering(
+        @AuthenticationPrincipal User user,
+        @PathVariable("gatheringId") Long gatheringId
+    ) {
+        log.info("모임 좋아요 요청 - gatheringId: {}", gatheringId);
+
+        return ResponseEntity.ok(gatheringService.likeGathering(gatheringId, user));
     }
 }

@@ -10,6 +10,7 @@ import com.develop_ping.union.gathering.exception.GatheringNotFoundException;
 import com.develop_ping.union.party.domain.PartyManager;
 import com.develop_ping.union.party.domain.entity.Party;
 import com.develop_ping.union.party.domain.entity.PartyRole;
+import com.develop_ping.union.party.exception.ParticipationNotFoundException;
 import com.develop_ping.union.user.domain.UserManager;
 import com.develop_ping.union.user.domain.entity.User;
 import com.develop_ping.union.user.exception.UserNotFoundException;
@@ -20,6 +21,8 @@ import org.springframework.data.domain.Slice;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
+
 @Slf4j
 @Component
 @Transactional(readOnly = true)
@@ -29,6 +32,7 @@ public class GatheringManagerImpl implements GatheringManager {
     private final GatheringRepository gatheringRepository;
     private final PartyManager partyManager;
     private final UserManager userManager;
+    private final GatheringSortStrategy dynamicSortStrategy;
 
     @Override
     public GatheringInfo save(Gathering gathering) {
@@ -39,16 +43,16 @@ public class GatheringManagerImpl implements GatheringManager {
     }
 
     @Override
-    public Slice<GatheringListInfo> getGatheringList(
-        GatheringSortStrategy strategy, GatheringListCommand command
-    ) {
+    public Slice<GatheringListInfo> getGatheringList(GatheringListCommand command) {
         log.info("\n모임 리스트 조회 ManagerImpl 클래스 : {}", command);
 
-        Slice<Gathering> gatheringList = strategy.applySort(gatheringRepository, command, command.getPageable());
+        // DynamicSortStrategy를 사용해 정렬과 검색 쿼리 실행 (동적 쿼리 사용, QueryDSL 사용)
+        Slice<Gathering> gatheringList = dynamicSortStrategy.applySort(gatheringRepository, command, command.getPageable());
 
         return gatheringList.map(gathering -> {
-            Party owner = partyManager.findOwnerByGatheringIdAndRole(gathering.getId(), PartyRole.OWNER)
-                                      .orElseThrow(() -> new UserNotFoundException("Owner not found"));
+            Party owner = partyManager
+                .findOwnerByGatheringIdAndRole(gathering.getId(), PartyRole.OWNER)
+                .orElseThrow(() -> new UserNotFoundException(("오너를 찾을 수 없습니다.")));
             return GatheringListInfo.from(gathering, owner.getUser());
         });
     }
@@ -91,5 +95,33 @@ public class GatheringManagerImpl implements GatheringManager {
         log.info("\n사용자 토큰으로 유저 조회 완료 : User: {}", findByTokenUserResult);
 
         return gatheringRepository.findByUserAsOwner(findByTokenUserResult, pageable);
+    }
+
+    @Override
+    @Transactional
+    public void kickOutUser(String userToken, Long gatheringId, User user) {
+        log.info("\n유저 추방 ManagerImpl 클래스 : userToken: {}, gatheringId: {}, user: {}", userToken, gatheringId, user.getId());
+
+        User targetUser = userManager.findByToken(userToken);
+        log.info("\n추방 대상 유저 조회 완료 : User: {}", targetUser);
+
+        Gathering gathering = gatheringRepository.findById(gatheringId)
+                                                 .orElseThrow(() -> new GatheringNotFoundException(gatheringId));
+        gathering.validateOwner(user);
+
+        Party party = partyManager.findByGatheringAndUser(gathering, targetUser)
+                                  .orElseThrow(() -> new ParticipationNotFoundException("참가자를 찾을 수 없습니다."));
+
+        log.info("추방 시킬 유저 ID = {}", party.getUser().getId());
+        gathering.getParties().remove(party);
+        gathering.decrementCurrentMember();
+        gatheringRepository.save(gathering);
+    }
+
+    @Override
+    public List<Gathering> getParticipatedGatheringList(User user) {
+        log.info("\n참여한 모임 리스트 조회 ManagerImpl 클래스 : {}", user.getId());
+
+        return gatheringRepository.findGatheringsByUserId(user.getId());
     }
 }

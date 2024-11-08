@@ -12,7 +12,7 @@ import java.util.List;
 
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class CommentDetailResponse {
+public class CommentBestResponse {
     private Long id;
     private String content;
     private Long postId;
@@ -22,19 +22,17 @@ public class CommentDetailResponse {
     private long commentLikes;
     private boolean isLiked;
     private CommenterResponse commenter;
-    private List<CommentDetailResponse> children;
 
     @Builder
-    public CommentDetailResponse(Long id,
-                                 String content,
-                                 Long postId,
-                                 Long parentId,
-                                 String parentNickname,
-                                 ZonedDateTime createdAt,
-                                 long commentLikes,
-                                 boolean isLiked,
-                                 CommenterResponse commenter,
-                                 List<CommentDetailResponse> children) {
+    public CommentBestResponse(Long id,
+                               String content,
+                               Long postId,
+                               Long parentId,
+                               String parentNickname,
+                               ZonedDateTime createdAt,
+                               long commentLikes,
+                               boolean isLiked,
+                               CommenterResponse commenter) {
         this.id = id;
         this.content = content;
         this.postId = postId;
@@ -44,11 +42,14 @@ public class CommentDetailResponse {
         this.commentLikes = commentLikes;
         this.isLiked = isLiked;
         this.commenter = commenter;
-        this.children = children != null ? children : new ArrayList<>();
     }
 
-    public static CommentDetailResponse from(CommentInfo info) {
-        return CommentDetailResponse.builder()
+    public static CommentBestResponse from(CommentInfo info) {
+        if (info == null) {
+            return null;
+        }
+
+        return CommentBestResponse.builder()
                 .id(info.getId())
                 .content(info.getContent())
                 .postId(info.getPostId())
@@ -58,7 +59,6 @@ public class CommentDetailResponse {
                 .commentLikes(info.getCommentLikes())
                 .isLiked(info.isLiked())
                 .commenter(CommenterResponse.from(info))
-                .children(new ArrayList<>())
                 .build();
     }
 

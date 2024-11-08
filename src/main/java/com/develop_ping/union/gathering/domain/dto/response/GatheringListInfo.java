@@ -8,13 +8,14 @@ import lombok.Getter;
 import org.springframework.data.domain.Slice;
 
 import java.time.ZonedDateTime;
-import java.util.Optional;
+import java.util.List;
 
 @Getter
 public class GatheringListInfo {
 
     private final Long id;
     private final String title;
+    private final String content;
     private final Integer maxMember;
     private final Integer currentMember;
     private final ZonedDateTime gatheringDateTime;
@@ -27,6 +28,7 @@ public class GatheringListInfo {
     private GatheringListInfo(
         Long id,
         String title,
+        String content,
         Integer maxMember,
         Integer currentMember,
         ZonedDateTime gatheringDateTime,
@@ -37,6 +39,7 @@ public class GatheringListInfo {
     ) {
         this.id = id;
         this.title = title;
+        this.content = content;
         this.maxMember = maxMember;
         this.currentMember = currentMember;
         this.gatheringDateTime = gatheringDateTime;
@@ -50,6 +53,7 @@ public class GatheringListInfo {
         return GatheringListInfo.builder()
                                 .id(gathering.getId())
                                 .title(gathering.getTitle())
+                                .content(gathering.getContent())
                                 .maxMember(gathering.getMaxMember())
                                 .currentMember(gathering.getCurrentMember())
                                 .gatheringDateTime(gathering.getGatheringDateTime())
@@ -60,11 +64,11 @@ public class GatheringListInfo {
                                 .build();
     }
 
-    // Slice<Gathering>을 받아 Slice<GatheringListInfo>로 변환하는 메서드
-    public static Slice<GatheringListInfo> of(Slice<Gathering> gatherings) {
+    public static Slice<GatheringListInfo> fromSlice(Slice<Gathering> gatherings) {
         return gatherings.map(gathering -> GatheringListInfo.builder()
                                                             .id(gathering.getId())
                                                             .title(gathering.getTitle())
+                                                            .content(gathering.getContent())
                                                             .maxMember(gathering.getMaxMember())
                                                             .currentMember(gathering.getCurrentMember())
                                                             .gatheringDateTime(gathering.getGatheringDateTime())
@@ -73,5 +77,22 @@ public class GatheringListInfo {
                                                             .user(gathering.getOwner())
                                                             .thumbnail(gathering.getThumbnail())
                                                             .build());
+    }
+
+    public static List<GatheringListInfo> fromList(List<Gathering> gatherings) {
+        return gatherings.stream()
+            .map(gathering -> GatheringListInfo.builder()
+                                               .id(gathering.getId())
+                                               .title(gathering.getTitle())
+                                               .content(gathering.getContent())
+                                               .maxMember(gathering.getMaxMember())
+                                               .currentMember(gathering.getCurrentMember())
+                                               .gatheringDateTime(gathering.getGatheringDateTime())
+                                               .views(gathering.getViews())
+                                               .place(gathering.getPlace())
+                                               .user(gathering.getUser())
+                                               .thumbnail(gathering.getThumbnail())
+                                               .build())
+            .toList();
     }
 }

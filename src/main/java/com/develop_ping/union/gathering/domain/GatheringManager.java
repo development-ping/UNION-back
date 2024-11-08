@@ -8,10 +8,12 @@ import com.develop_ping.union.user.domain.entity.User;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Slice;
 
+import java.util.List;
+
 public interface GatheringManager {
 
     GatheringInfo save(Gathering gathering);
-    Slice<GatheringListInfo> getGatheringList(GatheringSortStrategy strategy, GatheringListCommand command);
+    Slice<GatheringListInfo> getGatheringList(GatheringListCommand command);
     Gathering findById(Long gatheringId);
     void deleteGathering(Gathering gathering);
     Gathering findWithPessimisticLockById(Long gatheringId);
@@ -19,6 +21,10 @@ public interface GatheringManager {
     Slice<Gathering> getMyGatheringList(User user, Pageable pageable);
 
     Slice<Gathering> getUserGatheringList(String userToken, Pageable pageable);
+
+    void kickOutUser(String userToken, Long gatheringId, User user);
+
+    List<Gathering> getParticipatedGatheringList(User user);
 
     // 유저 탈퇴시
     //  이 유저가 가입된 모임 목록을 조회

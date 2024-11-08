@@ -7,6 +7,8 @@ import com.develop_ping.union.comment.exception.CommentPermissionDeniedException
 import com.develop_ping.union.comment.exception.CommenterMismatchException;
 import com.develop_ping.union.post.domain.PostManager;
 import com.develop_ping.union.post.domain.entity.Post;
+import com.develop_ping.union.reaction.domain.ReactionManager;
+import com.develop_ping.union.reaction.domain.entity.ReactionType;
 import com.develop_ping.union.user.domain.BlockUserManager;
 import com.develop_ping.union.user.domain.entity.User;
 import lombok.RequiredArgsConstructor;
@@ -23,6 +25,7 @@ public class CommentServiceImpl implements CommentService {
     private final CommentManager commentManager;
     private final PostManager postManager;
     private final BlockUserManager blockUserManager;
+    private final ReactionManager reactionManager;
 
     @Override
     @Transactional
@@ -36,16 +39,7 @@ public class CommentServiceImpl implements CommentService {
         Comment comment = commentManager.save(Comment.of(command.getContent(), post, user, parent, command.getParentNickname()));
 
         log.info("[ New Comment! ] comment id: {}", comment.getId());
-        return CommentInfo.of(comment);
-    }
-
-    @Override
-    public CommentInfo getComment(Long commentId) {
-        log.info("[ CommentService.getComment() ] comment id: {}", commentId);
-
-        Comment comment = commentManager.findById(commentId);
-
-        return CommentInfo.of(comment);
+        return CommentInfo.from(comment);
     }
 
     @Override
@@ -63,7 +57,7 @@ public class CommentServiceImpl implements CommentService {
         Comment updatedComment = commentManager.save(comment);
 
         log.info("[ Comment Update Completed! ] comment id: {}", updatedComment.getId());
-        return CommentInfo.of(updatedComment);
+        return CommentInfo.from(updatedComment);
     }
 
     @Override
@@ -85,11 +79,11 @@ public class CommentServiceImpl implements CommentService {
 
     @Override
     @Transactional(readOnly = true)
-    public CommentListInfo getCommentsByPostId(CommentCommand command) {
+    public List<CommentInfo> getCommentsByPostId(CommentCommand command) {
         log.info("[ CommentService.getCommentsByPostId() ] post id: {}", command.getPostId());
 
         Post post = postManager.findById(command.getPostId());
-        List<Comment> rootComments = commentManager.findByPostIdAndParentIsNull(post.getId());
+        List<Comment> comments = commentManager.findByPostId(post.getId());
 
         List<User> blockUsers = blockUserManager.findAllBlockedOrBlockingUser(command.getUser());
 
@@ -98,7 +92,41 @@ public class CommentServiceImpl implements CommentService {
         long count = commentManager.countByPostId(post.getId());
 
         log.info("[ Comments Retrieval Completed! ]");
-        return CommentListInfo.of(rootComments, count);
+        return comments.stream().map(comment -> {
+            long commentLikes = reactionManager.countLikesByComment(comment.getId());
+            boolean isLiked = reactionManager.existsByUserIdAndTypeAndId(
+                    command.getUser().getId(),
+                    ReactionType.COMMENT,
+                    comment.getId());
+
+            return CommentInfo.of(comment, commentLikes, isLiked);
+        }).toList();
+    }
+
+    @Override
+    @Transactional
+    public boolean likeComment(CommentCommand command) {
+        log.info("[ CommentService.likeComment() ] comment id: {}, user nickname: {}",
+                command.getId(), command.getUser().getNickname());
+
+        return reactionManager.likeComment(command.getUser(), command.getId()) != null;
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public CommentInfo getBestComment(CommentCommand command) {
+        log.info("[ CommentService.getBestComment() ] post id: {}", command.getPostId());
+        Comment bestComment = commentManager.findBestComment(command.getPostId());
+
+        if (bestComment == null) { return null; }
+
+        long commentLikes = reactionManager.countLikesByComment(bestComment.getId());
+        boolean isLiked = reactionManager.existsByUserIdAndTypeAndId(
+                bestComment.getUser().getId(),
+                ReactionType.COMMENT,
+                bestComment.getId());
+
+        return CommentInfo.of(bestComment, commentLikes, isLiked);
     }
 
     private void validateCommentOwner(User user, Comment comment) {
