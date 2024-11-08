@@ -21,7 +21,6 @@ public class NotificationManagerImpl implements NotificationManager {
 
     @Override
     public List<NotificationReadForService> findAllOrderByDate(Long page, Long size, User user) {
-        System.out.println(111);
         return notificationRepository.findAllOrder(page, size, user);
     }
 

@@ -99,3 +99,25 @@ VALUES ('2024-11-08 01:03:00', 4, NULL, 2, '2024-11-08 01:03:00', 1, '두 번째
 
 INSERT INTO comments (created_at, id, parent_id, post_id, updated_at, user_id, content, parent_nickname)
 VALUES ('2024-11-08 01:04:00', 5, NULL, 3, '2024-11-08 01:04:00', 1, '다른 글에 새 댓글 남김.', NULL);
+
+-- notification test
+INSERT INTO notifications (id, type, creator_type_id, attendee_type_id, is_read, creator_id, attendee_id, created_at, updated_at)
+VALUES (1, 'POST', 1, 2, false, 1, 3, '2024-11-08 10:00:00', '2024-11-08 10:00:00');
+
+INSERT INTO notifications (id, type, creator_type_id, attendee_type_id, is_read, creator_id, attendee_id, created_at, updated_at)
+VALUES (6, 'POST', 1, 3, false, 1, 4, '2024-11-08 11:00:00', '2024-11-08 11:00:00');
+
+INSERT INTO notifications (id, type, creator_type_id, attendee_type_id, is_read, creator_id, attendee_id, created_at, updated_at)
+VALUES (2, 'COMMENT', 1, 2, false, 1, 2, '2024-11-08 10:00:00', '2024-11-08 10:00:00');
+
+INSERT INTO notifications (id, type, creator_type_id, attendee_type_id, is_read, creator_id, attendee_id, created_at, updated_at)
+VALUES (3, 'COMMENT', 1, 3, false, 1, 3, '2024-11-08 10:00:00', '2024-11-08 10:00:00');
+
+INSERT INTO notifications (id, type, creator_type_id, attendee_type_id, is_read, creator_id, attendee_id, created_at, updated_at)
+VALUES (5, 'COMMENT', 2, 3, false, 3, 4, '2024-11-08 10:00:00', '2024-11-08 10:00:00');
+
+INSERT INTO notifications (id, type, creator_type_id, attendee_type_id, is_read, creator_id, attendee_id, created_at, updated_at)
+VALUES (4, 'GATHERING', 1, 3, false, 1, 1, '2024-11-08 10:00:00', '2024-11-08 10:00:00');
+
+INSERT INTO notifications (id, type, creator_type_id, attendee_type_id, is_read, creator_id, attendee_id, created_at, updated_at)
+VALUES (7, 'GATHERING', 1, 2, false, 1, 1, '2024-11-08 10:00:00', '2024-11-08 10:00:00');

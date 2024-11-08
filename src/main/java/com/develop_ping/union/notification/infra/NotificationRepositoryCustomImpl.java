@@ -9,13 +9,10 @@ import com.develop_ping.union.notification.infra.dto.NotificationReadForService;
 import com.develop_ping.union.post.domain.entity.QPost;
 import com.develop_ping.union.user.domain.entity.QUser;
 import com.develop_ping.union.user.domain.entity.User;
-import com.querydsl.core.types.Projections;
-import com.querydsl.jpa.impl.JPAQuery;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
 
 import java.sql.Timestamp;
-import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.util.ArrayList;
@@ -24,11 +21,6 @@ import java.util.List;
 public class NotificationRepositoryCustomImpl implements NotificationRepositoryCustom{
     @PersistenceContext
     EntityManager em;
-    private final QNotification qNotification = QNotification.notification;
-    private final QPost qPost = QPost.post;
-    private final QComment qComment = QComment.comment;
-    private final QGathering qGathering = QGathering.gathering;
-    private final QUser qUser = QUser.user;
     @Override
     public List<Notification> findAllOrderByDate(String srcToken, Long page, Long size) {
         return null;
@@ -37,6 +29,9 @@ public class NotificationRepositoryCustomImpl implements NotificationRepositoryC
     @Override
     public List<NotificationReadForService> findAllOrder(Long page, Long size, User user) {
         String query = """
+                select *
+                from(
+                -- post
                 select N.id, N.type, U.nickname, P.title, C.content, N.created_at, N.is_read
                 from (select *
                     from notifications
@@ -48,6 +43,40 @@ public class NotificationRepositoryCustomImpl implements NotificationRepositoryC
                 join posts P on N.creator_type_id = P.id
                 join comments C on N.attendee_type_id = C.id
                 join users U on N.attendee_id = U.id
+                where N.type = 'POST'
+                
+                union all
+                
+                -- comment
+                select N.id, N.type, U.nickname, C1.content, C.content, N.created_at, N.is_read
+                from (select *
+                    from notifications
+                    where 1=1
+                    and notifications.creator_id = :userId
+                    order by notifications.id desc
+                    limit :size
+                    offset :offset) N
+                join comments C1 on N.creator_type_id = C1.id
+                join comments C on N.attendee_type_id = C.id
+                join users U on N.attendee_id = U.id
+                where N.type = 'COMMENT'
+                
+                union all
+                
+                -- gathering
+                select N.id, N.type, U.nickname, G.title, 0, N.created_at, N.is_read
+                from (select *
+                    from notifications
+                    where 1=1
+                    and notifications.creator_id = :userId
+                    order by notifications.id desc
+                    limit :size
+                    offset :offset) N
+                join gatherings G on N.creator_type_id = G.id
+                join users U on N.attendee_id = U.id
+                where N.type = 'GATHERING'
+                ) tb
+                order by tb.id desc;
                 """;
         List<Object[]> results = em.createNativeQuery(query)
                 .setParameter("userId", user.getId())
@@ -74,6 +103,10 @@ public class NotificationRepositoryCustomImpl implements NotificationRepositoryC
             NotificationReadForService notification = new NotificationReadForService(id, type, nickname, title, content, createdAt, isRead);
             notificationList.add(notification);
         }
+
+//        System.out.println(notificationList.size());
+//        for (NotificationReadForService no : notificationList)
+//            System.out.println(no.getId() + " / " + no.getType() + " / " + no.getNickname() + " / " + no.getTitle() + " / " + no.getContent() + " / " + no.getCreatedAt() + " / " + no.getIsRead());
 
         return notificationList;
     }
