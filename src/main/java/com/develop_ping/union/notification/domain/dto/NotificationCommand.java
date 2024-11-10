@@ -31,12 +31,4 @@ public class NotificationCommand {
                 .user(user)
                 .build();
     }
-
-    public static NotificationCommand updateOf(Long id, User user){
-        return NotificationCommand.builder()
-                .id(id)
-                .user(user)
-                .build();
-    }
-
 }
